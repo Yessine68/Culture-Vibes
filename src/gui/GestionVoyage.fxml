@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="gui.GestionVoyageController">
+   <children>
+      <TableView fx:id="tbVoyages" prefHeight="221.0" prefWidth="600.0">
+        <columns>
+          <TableColumn fx:id="Cid" prefWidth="75.0" text="ID" />
+          <TableColumn fx:id="cTitle" prefWidth="75.0" text="Title" />
+            <TableColumn fx:id="cDescription" prefWidth="75.0" text="Description" />
+            <TableColumn fx:id="cDuration" prefWidth="75.0" text="Duration" />
+            <TableColumn fx:id="cBudget" prefWidth="75.0" text="Budget" />
+            <TableColumn fx:id="cLocation" prefWidth="75.0" text="Location" />
+            <TableColumn fx:id="cNbPlaces" prefWidth="75.0" text="NbPlaces" />
+            <TableColumn fx:id="cAction" prefWidth="75.0" text="Action" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
