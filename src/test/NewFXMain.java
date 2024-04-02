@@ -17,7 +17,7 @@ public class NewFXMain extends Application {
     public void start(Stage primaryStage) {
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/GestionVoyage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/AjouterVoyage.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             primaryStage.setTitle("Culture Vibes");

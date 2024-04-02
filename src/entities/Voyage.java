@@ -20,9 +20,17 @@ public class Voyage {
         this.voyageimage = voyageimage;
     }
 
-    public Voyage(int aInt, String string, String string0, int aInt0, double aDouble, String string1, int aInt1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Voyage(int duration, int budget, int nbrplaces, String title, String description, String location, String voyageimage) {
+        this.duration = duration;
+        this.budget = budget;
+        this.nbrplaces = nbrplaces;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.voyageimage = voyageimage;
     }
+
+ 
 
     public int getId() {
         return id;
