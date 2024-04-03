@@ -102,5 +102,37 @@ public class VoyageService implements IService<Voyage> {
         }
         return voyage;
     }
+
+    public void aaaa(int id) throws SQLException {
+        String query = "DELETE FROM voyage WHERE id = ?";
+        PreparedStatement stmt = cnx.prepareStatement(query);
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
+    }
+
+    /* 
+        public void aaaa(int id) throws SQLException {
+    String checkReservationQuery = "SELECT id FROM reservation WHERE voyage_id = ?";
+    String deleteReservationQuery = "DELETE FROM reservation WHERE voyage_id = ?";
+    String deleteVoyageQuery = "DELETE FROM voyage WHERE id = ?";
+    
+    // Check if there are any reservations associated with the voyage
+    PreparedStatement checkStmt = cnx.prepareStatement(checkReservationQuery);
+    checkStmt.setInt(1, id);
+    ResultSet rs = checkStmt.executeQuery();
+    
+    // If there are associated reservations, delete them
+    if (rs.next()) {
+        PreparedStatement deleteReservationStmt = cnx.prepareStatement(deleteReservationQuery);
+        deleteReservationStmt.setInt(1, id);
+        deleteReservationStmt.executeUpdate();
+    }
+    
+    // Delete the voyage
+    PreparedStatement deleteVoyageStmt = cnx.prepareStatement(deleteVoyageQuery);
+    deleteVoyageStmt.setInt(1, id);
+    deleteVoyageStmt.executeUpdate();
 }
 
+     */
+}
