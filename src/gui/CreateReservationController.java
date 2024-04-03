@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
 import services.ReservationService;
 import services.VoyageService; // Import the VoyageService class
 
@@ -38,19 +39,21 @@ public class CreateReservationController implements Initializable {
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        try {
-            voyagesList = FXCollections.observableArrayList(vs.recuperer()); // Fetch voyages and populate list
-            voyCB.setItems(voyagesList); // Set the items for the combo box
-            voyCB.setValue(null); // Set the default selected value to null
+public void initialize(URL url, ResourceBundle rb) {
+    try {
+        voyagesList = FXCollections.observableArrayList(vs.recuperer()); // Fetch voyages and populate list
+        voyCB.setItems(voyagesList); // Set the items for the combo box
+        voyCB.setValue(null); // Set the default selected value to null
 
-            // Set the cell factory to display voyage title
-            voyCB.setCellFactory(cell -> new VoyageCellFactory());
-        } catch (SQLException ex) {
-            Logger.getLogger(CreateReservationController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        // Set the cell factory to display voyage title
+        voyCB.setCellFactory(cell -> new VoyageCellFactory());
+
+        // Set the string converter to display the title in the combo box
+        voyCB.setConverter(new VoyageStringConverter());
+    } catch (SQLException ex) {
+        Logger.getLogger(CreateReservationController.class.getName()).log(Level.SEVERE, null, ex);
     }
-
+}
     @FXML
     private void Submit(ActionEvent event) throws SQLException {
         String nbrPlaces = nbrPlacesTF.getText();
@@ -86,4 +89,17 @@ public class CreateReservationController implements Initializable {
             }
         }
     }
+    private static class VoyageStringConverter extends StringConverter<Voyage> {
+
+    @Override
+    public String toString(Voyage voyage) {
+        return voyage != null ? voyage.getTitle() : null; // Convert voyage to its title
+    }
+
+    @Override
+    public Voyage fromString(String string) {
+        // Not needed for this example
+        return null;
+    }
+}
 }
