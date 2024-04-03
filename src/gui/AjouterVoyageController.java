@@ -1,6 +1,7 @@
 package gui;
 
 import entities.Voyage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -10,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import services.VoyageService;
+import javafx.stage.FileChooser;
 
 /**
  * FXML Controller class
@@ -19,6 +21,7 @@ import services.VoyageService;
 public class AjouterVoyageController implements Initializable {
 
     VoyageService vs = new VoyageService();
+    private File selectedFile; // Field to store the selected file
 
     @FXML
     private TextField titleTF;
@@ -42,31 +45,53 @@ public class AjouterVoyageController implements Initializable {
     }
 
     @FXML
-    private void Submit(ActionEvent event) throws SQLException, IOException {
+    private void Submit(ActionEvent event) {
         String title = titleTF.getText();
         String description = desciptionTF.getText();
         String duration = durationTF.getText();
         String budget = budgetTF.getText();
         String location = locationTF.getText();
         String nbPlaces = nbPlacesTF.getText();
-        String voyageimage = "test.png";
+        String voyageImage = ""; // Initialize with an empty string for now
+
         int durationInt = Integer.parseInt(duration);
         int budgetInt = Integer.parseInt(budget);
         int nbPlacesInt = Integer.parseInt(nbPlaces);
 
-        Voyage voy = new Voyage(durationInt, budgetInt, nbPlacesInt, title, description, location, voyageimage);
+        if (selectedFile == null) {
+            System.out.println("No file selected.");
+            return;
+        }
 
-        vs.ajouter(voy);
-        System.out.println("Ajouté");
-        /*        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/Login.fxml"));
-        Parent parent = loader.load();
-        LoginController controller = loader.getController();
-        controller.setUser(voy);
-        usernameTF.getScene().setRoot(parent); */
+        voyageImage = selectedFile.toURI().toString();
+        System.out.println("Selected file: " + voyageImage);
+
+        try {
+            Voyage voy = new Voyage(durationInt, budgetInt, nbPlacesInt, title, description, location, voyageImage);
+            vs.ajouter(voy);
+            System.out.println("Voyage ajouté avec succès.");
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout du voyage: " + e.getMessage());
+            // Handle SQLException
+        }
     }
 
     @FXML
     private void chooseFile(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Image File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        // Show open file dialog
+        selectedFile = fileChooser.showOpenDialog(null);
+
+        if (selectedFile != null) {
+            String imagePath = selectedFile.toURI().toString();
+            System.out.println("Selected file: " + imagePath);
+            // Now you can save the imagePath to the database or perform any other operation
+        }
     }
 
 }
