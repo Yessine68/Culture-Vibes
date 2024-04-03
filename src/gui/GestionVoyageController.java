@@ -1,8 +1,10 @@
 package gui;
 
 import entities.Voyage;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +16,10 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -23,6 +28,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import services.VoyageService;
 import utils.MyDB;
 
@@ -66,7 +72,7 @@ public class GestionVoyageController implements Initializable {
         }
     }
 
-        private List<Voyage> voyagesList;
+    private List<Voyage> voyagesList;
 
     public void ListeVoyages() throws SQLException {
         VoyageService hrc = new VoyageService();
@@ -79,9 +85,9 @@ public class GestionVoyageController implements Initializable {
         cBudget.setCellValueFactory(new PropertyValueFactory<>("budget"));
         cLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
         cNbPlaces.setCellValueFactory(new PropertyValueFactory<>("nbrplaces"));
-        
+
         boolean deleteColumnExists = false;
-        boolean blockColumnExists = false;
+        boolean ModifyColumnExists = false;
 
         for (TableColumn column : tbVoyages.getColumns()) {
             if (column.getText().equals("Action")) {
@@ -89,8 +95,8 @@ public class GestionVoyageController implements Initializable {
                 break;
             }
         }
-        
-                if (!deleteColumnExists) {
+
+        if (!deleteColumnExists) {
             TableColumn<Voyage, Void> deleteColumn = new TableColumn<>("Action");
             deleteColumn.setCellFactory(column -> {
                 return new TableCell<Voyage, Void>() {
@@ -141,13 +147,54 @@ public class GestionVoyageController implements Initializable {
             tbVoyages.getColumns().add(deleteColumn);
         }
 
+       if (!ModifyColumnExists) {
+    TableColumn<Voyage, Void> modifyColumn = new TableColumn<>("Update");
+    modifyColumn.setCellFactory(column -> {
+        return new TableCell<Voyage, Void>() {
+            private final Button modifyButton = new Button("Modify");
+
+            {
+                modifyButton.setOnAction(event -> {
+                    Voyage selectedVoyage = getTableView().getItems().get(getIndex());
+                    // Navigate to updateVoyage.fxml with the selected voyage
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateVoyage.fxml"));
+                    Parent root;
+                    try {
+                        root = loader.load();
+                        UpdateVoyageController controller = loader.getController();
+                        controller.initData(selectedVoyage);
+                        Stage stage = new Stage();
+                        stage.setScene(new Scene(root));
+                        stage.show();
+                    } catch (IOException ex) {
+                        Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(modifyButton);
+                }
+            }
+        };
+    });
+
+    tbVoyages.getColumns().add(modifyColumn);
+}
+
+
         // Load voyages from the database
         List<Voyage> list = hrc.recuperer();
         ObservableList<Voyage> observableList = FXCollections.observableArrayList(list);
         tbVoyages.setItems(observableList);
     }
-    
-        private void refreshTable() {
+
+    private void refreshTable() {
         try {
             voyagesList = new VoyageService().recuperer();
             tbVoyages.setItems(FXCollections.observableArrayList(voyagesList));
