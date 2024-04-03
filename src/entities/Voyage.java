@@ -30,6 +30,9 @@ public class Voyage {
         this.voyageimage = voyageimage;
     }
 
+    public Voyage() {
+    }
+
  
 
     public int getId() {

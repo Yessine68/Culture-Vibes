@@ -91,4 +91,12 @@ public class ReservationService implements IService<Reservation> {
         }
         return reservation;
     }
+    
+    
+        public void aaaa(int id) throws SQLException {
+        String query = "DELETE FROM reservation WHERE id = ?";
+        PreparedStatement stmt = cnx.prepareStatement(query);
+        stmt.setInt(1, id);
+        stmt.executeUpdate();
+    }
 }

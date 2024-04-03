@@ -1,12 +1,14 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package gui;
 
+import entities.Reservation;
 import entities.Voyage;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +23,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
@@ -29,7 +30,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import services.VoyageService;
+import services.ReservationService;
 import utils.MyDB;
 
 /**
@@ -37,27 +38,22 @@ import utils.MyDB;
  *
  * @author Ahmed El Abed
  */
-public class GestionVoyageController implements Initializable {
+public class ReservationListBackController implements Initializable {
 
-    @FXML
-    private TableView<Voyage> tbVoyages;
     @FXML
     private TableColumn<?, ?> Cid;
     @FXML
-    private TableColumn<?, ?> cTitle;
+    private TableColumn<?, ?> cNbTickets;
     @FXML
-    private TableColumn<?, ?> cDescription;
+    private TableColumn<?, ?> cUserId;
     @FXML
-    private TableColumn<?, ?> cDuration;
+    private TableColumn<?, ?> cPayment;
     @FXML
-    private TableColumn<?, ?> cBudget;
-    @FXML
-    private TableColumn<?, ?> cLocation;
-    @FXML
-    private TableColumn<?, ?> cNbPlaces;
-
+    private TableColumn<?, ?> cVoyage;
 
     private final MyDB myDB = MyDB.getInstance();
+    @FXML
+    private TableView<Reservation> tbReservations;
 
     /**
      * Initializes the controller class.
@@ -65,30 +61,28 @@ public class GestionVoyageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            ListeVoyages();
+            ListeReservation();
         } catch (SQLException ex) {
             Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private List<Voyage> voyagesList;
+    private List<Reservation> reservationList;
 
-    public void ListeVoyages() throws SQLException {
-        VoyageService hrc = new VoyageService();
+    public void ListeReservation() throws SQLException {
+        ReservationService hrc = new ReservationService();
 
         // Initialize table columns
         Cid.setCellValueFactory(new PropertyValueFactory<>("id"));
-        cTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-        cDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        cDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
-        cBudget.setCellValueFactory(new PropertyValueFactory<>("budget"));
-        cLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
-        cNbPlaces.setCellValueFactory(new PropertyValueFactory<>("nbrplaces"));
+        cNbTickets.setCellValueFactory(new PropertyValueFactory<>("nbrtickets"));
+        cUserId.setCellValueFactory(new PropertyValueFactory<>("iduser"));
+        cPayment.setCellValueFactory(new PropertyValueFactory<>("paiement"));
+        cVoyage.setCellValueFactory(new PropertyValueFactory<>("voyage_id"));
 
         boolean deleteColumnExists = false;
         boolean ModifyColumnExists = false;
 
-        for (TableColumn column : tbVoyages.getColumns()) {
+        for (TableColumn column : tbReservations.getColumns()) {
             if (column.getText().equals("Action")) {
                 deleteColumnExists = true;
                 break;
@@ -96,18 +90,18 @@ public class GestionVoyageController implements Initializable {
         }
 
         if (!deleteColumnExists) {
-            TableColumn<Voyage, Void> deleteColumn = new TableColumn<>("Action");
+            TableColumn<Reservation, Void> deleteColumn = new TableColumn<>("Action");
             deleteColumn.setCellFactory(column -> {
-                return new TableCell<Voyage, Void>() {
+                return new TableCell<Reservation, Void>() {
                     private final Button deleteButton = new Button("Delete");
 
                     {
                         deleteButton.setOnAction(event -> {
-                            Voyage u = getTableView().getItems().get(getIndex());
-                            VoyageService us = new VoyageService();
-                            Alert alert = new Alert(AlertType.CONFIRMATION);
-                            alert.setTitle("Delete Voyage");
-                            alert.setHeaderText("Are you sure you want to delete this Voyage?");
+                            Reservation u = getTableView().getItems().get(getIndex());
+                            ReservationService us = new ReservationService();
+                            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                            alert.setTitle("Delete reservation");
+                            alert.setHeaderText("Are you sure you want to delete this reservation?");
                             alert.setContentText("This action cannot be undone.");
                             Optional<ButtonType> result = alert.showAndWait();
                             if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -119,7 +113,7 @@ public class GestionVoyageController implements Initializable {
                                     Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             } else {
-     
+
                                 alert.close();
                             }
 
@@ -138,62 +132,62 @@ public class GestionVoyageController implements Initializable {
                 };
             });
 
-            tbVoyages.getColumns().add(deleteColumn);
+            tbReservations.getColumns().add(deleteColumn);
         }
 
-       if (!ModifyColumnExists) {
-    TableColumn<Voyage, Void> modifyColumn = new TableColumn<>("Update");
-    modifyColumn.setCellFactory(column -> {
-        return new TableCell<Voyage, Void>() {
-            private final Button modifyButton = new Button("Modify");
+        if (!ModifyColumnExists) {
+            TableColumn<Reservation, Void> modifyColumn = new TableColumn<>("Update");
+            modifyColumn.setCellFactory(column -> {
+                return new TableCell<Reservation, Void>() {
+                    private final Button modifyButton = new Button("Modify");
 
-            {
-                modifyButton.setOnAction(event -> {
-                    Voyage selectedVoyage = getTableView().getItems().get(getIndex());
-                    // Navigate to updateVoyage.fxml with the selected voyage
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateVoyage.fxml"));
-                    Parent root;
-                    try {
+                    {
+                        modifyButton.setOnAction(event -> {
+                            Reservation selectedReservation = getTableView().getItems().get(getIndex());
+                            // Navigate to updateVoyage.fxml with the selected voyage
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateVoyage.fxml"));
+                            Parent root;
+                            /*  try {
                         root = loader.load();
-                        UpdateVoyageController controller = loader.getController();
-                        controller.initData(selectedVoyage);
+                        UpdateReservationController controller = loader.getController();
+                        controller.initData(selectedReservation);
                         Stage stage = new Stage();
                         stage.setScene(new Scene(root));
                         stage.show();
                     } catch (IOException ex) {
                         Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
+                    }  */
+                        });
                     }
-                });
-            }
 
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(modifyButton);
-                }
-            }
-        };
-    });
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(modifyButton);
+                        }
+                    }
+                };
+            });
 
-    tbVoyages.getColumns().add(modifyColumn);
-}
-
+            tbReservations.getColumns().add(modifyColumn);
+        }
 
         // Load voyages from the database
-        List<Voyage> list = hrc.recuperer();
-        ObservableList<Voyage> observableList = FXCollections.observableArrayList(list);
-        tbVoyages.setItems(observableList);
+        List<Reservation> list = hrc.recuperer();
+        ObservableList<Reservation> observableList = FXCollections.observableArrayList(list);
+        tbReservations.setItems(observableList);
     }
 
     private void refreshTable() {
         try {
-            voyagesList = new VoyageService().recuperer();
-            tbVoyages.setItems(FXCollections.observableArrayList(voyagesList));
+            reservationList = new ReservationService().recuperer();
+            tbReservations.setItems(FXCollections.observableArrayList(reservationList));
         } catch (SQLException ex) {
             Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

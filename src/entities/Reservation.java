@@ -16,6 +16,15 @@ public class Reservation {
         this.paiement = paiement;
     }
 
+    public Reservation(int voyage_id, int nbrtickets, int iduser, String paiement) {
+        this.voyage_id = voyage_id;
+        this.nbrtickets = nbrtickets;
+        this.iduser = iduser;
+        this.paiement = paiement;
+    }
+
+
+
     public int getId() {
         return id;
     }
