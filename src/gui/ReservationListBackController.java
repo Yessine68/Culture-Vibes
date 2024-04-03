@@ -144,19 +144,18 @@ public class ReservationListBackController implements Initializable {
                     {
                         modifyButton.setOnAction(event -> {
                             Reservation selectedReservation = getTableView().getItems().get(getIndex());
-                            // Navigate to updateVoyage.fxml with the selected voyage
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateVoyage.fxml"));
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateReservation.fxml"));
                             Parent root;
-                            /*  try {
-                        root = loader.load();
-                        UpdateReservationController controller = loader.getController();
-                        controller.initData(selectedReservation);
-                        Stage stage = new Stage();
-                        stage.setScene(new Scene(root));
-                        stage.show();
-                    } catch (IOException ex) {
-                        Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
-                    }  */
+                            try {
+                                root = loader.load();
+                                UpdateReservationController controller = loader.getController();
+                                controller.initData(selectedReservation); // Initialize selected reservation
+                                Stage stage = new Stage();
+                                stage.setScene(new Scene(root));
+                                stage.show();
+                            } catch (IOException ex) {
+                                Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         });
                     }
 
