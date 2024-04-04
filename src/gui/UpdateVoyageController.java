@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -70,36 +71,63 @@ public class UpdateVoyageController implements Initializable {
         // Get updated data from text fields
         String title = titleTF.getText();
         String description = desciptionTF.getText();
-        int duration = Integer.parseInt(durationTF.getText());
-        int budget = Integer.parseInt(budgetTF.getText());
         String location = locationTF.getText();
-        int nbPlaces = Integer.parseInt(nbPlacesTF.getText());
+        String duration = durationTF.getText();
+        String budget = budgetTF.getText();
+        String nbPlaces = nbPlacesTF.getText();
 
-        // Update the selected voyage object with new data
-        selectedVoyage.setTitle(title);
-        selectedVoyage.setDescription(description);
-        selectedVoyage.setDuration(duration);
-        selectedVoyage.setBudget(budget);
-        selectedVoyage.setLocation(location);
-        selectedVoyage.setNbrplaces(nbPlaces);
+
+
         if (selectedFile == null) {
             System.out.println("No file selected.");
-            return;
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a file");
+            alert.showAndWait();
         }
-        // Call VoyageService to update the voyage in the database
-        VoyageService voyageService = new VoyageService();
-        try {
-            voyageService.modifier(selectedVoyage);
-            // Close the window after successful update
-            Stage stage = (Stage) titleTF.getScene().getWindow();
-            stage.close();
-            // Refresh the table in GestionVoyageController
-            GestionVoyageController.getInstance().refreshTable();
+       else if (title.isEmpty() || description.isEmpty() || duration.isEmpty() || budget.isEmpty() || location.isEmpty() || nbPlaces.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please fill all the fields");
+            alert.showAndWait();
+        } else if(!isValidString(title)||!isValidString(description)||!isValidInt(duration)||!isValidInt(budget)||!isValidString(location)||!isValidInt(nbPlaces)){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText("Please enter valid information.");
+        alert.showAndWait();
+    } else {
+            int durationInt = Integer.parseInt(durationTF.getText());
+            int budgetInt = Integer.parseInt(budgetTF.getText());
+            int nbPlacesInt = Integer.parseInt(nbPlacesTF.getText());
+            selectedVoyage.setTitle(title);
+            selectedVoyage.setDescription(description);
+            selectedVoyage.setDuration(durationInt);
+            selectedVoyage.setBudget(budgetInt);
+            selectedVoyage.setLocation(location);
+            selectedVoyage.setNbrplaces(nbPlacesInt);
 
-        } catch (SQLException ex) {
-            // Handle exception, e.g., display an error message
-            System.out.println("Error updating voyage: " + ex.getMessage());
+            // Call VoyageService to update the voyage in the database
+            VoyageService voyageService = new VoyageService();
+            try {
+                voyageService.modifier(selectedVoyage);
+                // Close the window after successful update
+                Stage stage = (Stage) titleTF.getScene().getWindow();
+                stage.close();
+                // Refresh the table in GestionVoyageController
+                GestionVoyageController.getInstance().refreshTable();
+
+            } catch (SQLException ex) {
+                // Handle exception, e.g., display an error message
+                System.out.println("Error updating voyage: " + ex.getMessage());
+            }
+
         }
+        // Update the selected voyage object with new data
+
+
     }
 
     @FXML
