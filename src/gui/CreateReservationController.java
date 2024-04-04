@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -63,16 +64,42 @@ public void initialize(URL url, ResourceBundle rb) {
         // Get the selected voyage from the combo box
         Voyage selectedVoyage = voyCB.getSelectionModel().getSelectedItem();
         if (selectedVoyage != null) {
-            int voyageId = selectedVoyage.getId(); // Access voyage ID
-            int nbrPlacesInt = Integer.parseInt(nbrPlaces);
+            if (nbrPlaces.isEmpty() || paiment.isEmpty() || user.isEmpty()){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Please fill all the fields");
+                alert.showAndWait();
+            } else if(!isValidString(user)||!isValidString(paiment)||!isValidInt(nbrPlaces)){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Please enter valid information.");
+                alert.showAndWait();
+            }
+            else {
+                int voyageId = selectedVoyage.getId(); // Access voyage ID
+                int nbrPlacesInt = Integer.parseInt(nbrPlaces);
 
-            // Create reservation with voyage ID
-            Reservation res = new Reservation(voyageId, nbrPlacesInt, user_id, paiment);
-            rs.ajouter(res);
-            System.out.println("Ajouté");
+                // Create reservation with voyage ID
+                Reservation res = new Reservation(voyageId, nbrPlacesInt, user_id, paiment);
+                rs.ajouter(res);
+                System.out.println("Ajouté");
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Validé");
+                alert.setHeaderText(null);
+                alert.setContentText("Reservation Validé !");
+                alert.showAndWait();
+            }
+
         } else {
             // Handle case where no voyage is selected
             System.out.println("Please select a voyage");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a voyage.");
+            alert.showAndWait();
         }
     }
 
@@ -102,4 +129,13 @@ public void initialize(URL url, ResourceBundle rb) {
         return null;
     }
 }
+
+    private boolean isValidInt(String value) {
+        // Check if the value is a valid integer
+        return value.matches("-?\\d+");
+    }
+    private boolean isValidString(String name) {
+        // Check if the name contains only letters and has length between 2 and 50
+        return name.matches("^[a-zA-Z]{2,50}$");
+    }
 }

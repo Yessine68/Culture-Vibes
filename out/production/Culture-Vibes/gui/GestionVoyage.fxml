@@ -19,5 +19,6 @@
         </columns>
       </TableView>
       <Button layoutX="577.0" layoutY="411.0" mnemonicParsing="false" onAction="#goToReservation" text="Reservations" />
+      <Button layoutX="42.0" layoutY="411.0" mnemonicParsing="false" onAction="#GoToAjout" text="Ajouter Voyage" />
    </children>
 </AnchorPane>

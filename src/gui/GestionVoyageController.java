@@ -75,6 +75,25 @@ public class GestionVoyageController implements Initializable {
         }
     }
 
+    @FXML
+    void GoToAjout(ActionEvent event) {
+        try {
+            // Load GestionVoyage.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AjouterVoyage.fxml"));
+            Parent root = loader.load();
+
+            // Get the stage from the event source
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+
+            // Create a new scene with GestionVoyage.fxml content and set it to the stage
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private final MyDB myDB = MyDB.getInstance();
 
     /**
@@ -139,7 +158,7 @@ public class GestionVoyageController implements Initializable {
                                     Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             } else {
-     
+
                                 alert.close();
                             }
 
@@ -220,6 +239,8 @@ public class GestionVoyageController implements Initializable {
     public static GestionVoyageController getInstance() {
         return instance;
     }
+
+
 
 
 }
