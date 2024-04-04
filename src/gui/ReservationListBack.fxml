@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ReservationListBackController">
+<AnchorPane id="AnchorPane" prefHeight="450.0" prefWidth="686.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ReservationListBackController">
    <children>
-      <TableView fx:id="tbReservations" prefHeight="245.0" prefWidth="600.0">
+      <TableView fx:id="tbReservations" prefHeight="397.0" prefWidth="686.0">
         <columns>
           <TableColumn fx:id="Cid" prefWidth="33.0" text="ID" />
           <TableColumn fx:id="cNbTickets" prefWidth="126.0" text="Number of tickets" />
@@ -15,5 +16,6 @@
             <TableColumn fx:id="cVoyage" prefWidth="145.0" text="Voyage" />
         </columns>
       </TableView>
+      <Button layoutX="583.0" layoutY="411.0" mnemonicParsing="false" onAction="#goToVoy" text="Voyages" />
    </children>
 </AnchorPane>

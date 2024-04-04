@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import services.VoyageService;
 
 /**
@@ -79,8 +80,12 @@ public class UpdateVoyageController implements Initializable {
         VoyageService voyageService = new VoyageService();
         try {
             voyageService.modifier(selectedVoyage);
-            // Optionally, display a success message
-            System.out.println("Voyage updated successfully!");
+            // Close the window after successful update
+            Stage stage = (Stage) titleTF.getScene().getWindow();
+            stage.close();
+            // Refresh the table in GestionVoyageController
+            GestionVoyageController.getInstance().refreshTable();
+
         } catch (SQLException ex) {
             // Handle exception, e.g., display an error message
             System.out.println("Error updating voyage: " + ex.getMessage());

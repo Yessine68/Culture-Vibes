@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import services.ReservationService;
 
 /**
@@ -71,6 +72,10 @@ public class UpdateReservationController implements Initializable {
             reservationService.modifier(selectedReservation);
             // Optionally, display a success message
             System.out.println("Reservation updated successfully!");
+            Stage stage = (Stage) userIdTF.getScene().getWindow();
+            stage.close();
+            // Refresh the table in GestionVoyageController
+            ReservationListBackController.getInstance().refreshTable();
         } catch (SQLException ex) {
             // Handle exception, e.g., display an error message
             System.out.println("Error updating Reservation: " + ex.getMessage());

@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -35,6 +36,9 @@ import utils.MyDB;
  */
 public class GestionVoyageController implements Initializable {
 
+    private static GestionVoyageController instance;
+
+
     @FXML
     private TableView<Voyage> tbVoyages;
     @FXML
@@ -52,6 +56,24 @@ public class GestionVoyageController implements Initializable {
     @FXML
     private TableColumn<?, ?> cNbPlaces;
 
+    @FXML
+    void goToReservation(ActionEvent event) {
+        try {
+            // Load GestionVoyage.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ReservationListBack.fxml"));
+            Parent root = loader.load();
+
+            // Get the stage from the event source
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+
+            // Create a new scene with GestionVoyage.fxml content and set it to the stage
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private final MyDB myDB = MyDB.getInstance();
 
@@ -60,6 +82,8 @@ public class GestionVoyageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        instance = this;
+
         try {
             ListeVoyages();
         } catch (SQLException ex) {
@@ -184,7 +208,7 @@ public class GestionVoyageController implements Initializable {
         tbVoyages.setItems(observableList);
     }
 
-    private void refreshTable() {
+    public void refreshTable() {
         try {
             voyagesList = new VoyageService().recuperer();
             tbVoyages.setItems(FXCollections.observableArrayList(voyagesList));
@@ -192,4 +216,12 @@ public class GestionVoyageController implements Initializable {
             Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public static GestionVoyageController getInstance() {
+        return instance;
+    }
+
+
 }
+
+

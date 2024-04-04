@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -40,6 +41,9 @@ import utils.MyDB;
  */
 public class ReservationListBackController implements Initializable {
 
+    private static ReservationListBackController instance;
+
+
     @FXML
     private TableColumn<?, ?> Cid;
     @FXML
@@ -55,11 +59,33 @@ public class ReservationListBackController implements Initializable {
     @FXML
     private TableView<Reservation> tbReservations;
 
+
+    @FXML
+    void goToVoy(ActionEvent event) {
+        try {
+            // Load GestionVoyage.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("GestionVoyage.fxml"));
+            Parent root = loader.load();
+
+            // Get the stage from the event source
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+
+            // Create a new scene with GestionVoyage.fxml content and set it to the stage
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        instance = this;
+
         try {
             ListeReservation();
         } catch (SQLException ex) {
@@ -180,13 +206,17 @@ public class ReservationListBackController implements Initializable {
         tbReservations.setItems(observableList);
     }
 
-    private void refreshTable() {
+    public void refreshTable() {
         try {
             reservationList = new ReservationService().recuperer();
             tbReservations.setItems(FXCollections.observableArrayList(reservationList));
         } catch (SQLException ex) {
             Logger.getLogger(GestionVoyageController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public static ReservationListBackController getInstance() {
+        return instance;
     }
 
 }
