@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="gui.UpdateReservationController">
+   <children>
+      <TextField fx:id="userIdTF" layoutX="226.0" layoutY="118.0" />
+      <TextField fx:id="paiementTF" layoutX="226.0" layoutY="175.0" />
+      <TextField fx:id="nbrTicketsTF" layoutX="226.0" layoutY="232.0" />
+      <TextField fx:id="voyIdTF" layoutX="226.0" layoutY="290.0" />
+      <Label layoutX="59.0" layoutY="48.0" text="Modify Reservation" />
+      <Button layoutX="495.0" layoutY="345.0" mnemonicParsing="false" onAction="#Update" text="Update" />
+      <Label layoutX="111.0" layoutY="122.0" text="User ID :" />
+      <Label layoutX="108.0" layoutY="179.0" text="Payment Type :" />
+      <Label layoutX="108.0" layoutY="236.0" text="Number of tickets :" />
+      <Label layoutX="108.0" layoutY="294.0" text="Voyage ID" />
+   </children>
+</AnchorPane>
